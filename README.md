@@ -18,3 +18,5 @@ tail multiple files with colors
     /path/to/tomcat/logs/catalina.out
 
 #### output
+![tails output](https://raw.github.com/illb/tails/master/doc/tails-screenshot01.png)
+
