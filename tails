@@ -1,0 +1,76 @@
+#!/usr/bin/env perl
+# multfile tail
+# see : https://github.com/illb/tails
+
+use Getopt::Long;
+
+my @colors = (31, 32, 33, 34, 35, 36, 37, 38);
+
+if ($#ARGV < 0) {
+	die "usage : program filelist\n";
+}
+
+$|=1;
+my @filenames;
+for my $arg (@ARGV) {
+	my @globed_arg = glob($arg);
+	for my $filename (@globed_arg) {
+		if (-e $filename && -f $filename) {
+			push(@filenames, $filename);
+		} else {
+			print "File not found!! : $filename\n";
+		}
+	}
+}
+my $filecnt = @filenames;
+open_files();
+print_logs();
+close_files();
+
+sub print_line {
+	my ($idx, $msg) = @_;
+	my $color = $colors[$idx];
+	print("\e[$color");
+	print("m$msg\e[0m\n");
+}
+
+sub open_files {
+	for (my $i = 0; $i < $filecnt; $i++) {
+		my $FILEDESC = "FILE".$i;
+		open($FILEDESC, $filenames[$i]);
+		if (seek($FILEDESC, 0, 2) != 1) {
+			my $curpos;
+			for ($curpos = tell($FILEDESC); <$FILEDESC>; $curpos = tell($FILEDESC)) {
+			}
+			seek($FILEDESC, $curpos, 0);
+		}
+		print_line($i, $filenames[$i]);
+	}
+}
+
+sub _handle {
+	my ($i,$line) = @_;
+	print_line($i, $line);
+}
+
+
+sub print_logs {
+	while(1) {
+		for (my $i = 0; $i < $filecnt; $i++) {
+			my $FILEDESC = "FILE".$i;
+			while (<$FILEDESC>) {
+				chomp();
+				_handle($i, $_);
+			}
+		}
+		sleep(1);
+	}
+}
+
+sub close_files {
+	for (my $i = 0; $i < $filecnt; $i++) {
+		my $FILEDESC = "FILE".$i;
+		close($FILEDESC);
+	}
+}
+
