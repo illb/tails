@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# multfile tail
+# tail multiple files with colors
 # see : https://github.com/illb/tails
 
 use Getopt::Long;

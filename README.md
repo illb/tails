@@ -1,6 +1,20 @@
 tails
 =====
 
-multifile tail
+tail multiple files with colors
 
-usage : program filelist
+### simple install
+
+    curl https://raw.github.com/illb/tails/master/tails > ~/bin/tails; chmod 755 ~/bin/tails
+
+### simple usage
+* usage : program filelist
+
+### example
+#### command
+
+    tails \
+    /var/log/system.log \ 
+    /path/to/tomcat/logs/catalina.out
+
+#### output
